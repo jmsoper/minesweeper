@@ -5,20 +5,11 @@ class Player
   end
 
   def request_move
-    puts "Would you like to place a flag (1) or turn a tile (2)?"
-    answer = gets.chomp.to_i
-    puts "Please put in x,y coordinates:"
-    pos = gets.chomp.split(",").map(&:to_i)
-    case answer
-    when 1
-      then
+    puts "Type 'flag' to set flag"
+    puts "or 'tile' to reveal a tile."
+    answer = gets.chomp
+    puts "Please input row, column:"
+    pos = gets.chomp.split(",").map{|n| n.to_i - 1}
+    [answer, pos]
   end
-
-
-
 end
-
-
-a = Player.new
-
-a.request_move

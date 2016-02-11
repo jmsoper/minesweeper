@@ -8,6 +8,10 @@ class Tile
     @flagged = false
   end
 
+  def reveal_tile
+    @showing = true
+  end
+
   def set_flag
     @flagged = true
   end

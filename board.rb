@@ -10,7 +10,6 @@ class Board
     @row_length = grid_size - 1
     grid_size.times{set_bombs(grid_size)}
     set_bomb_proximity
-    render
   end
 
   def render
@@ -27,14 +26,11 @@ class Board
 
   def set_bomb_proximity
     @bomb_locations.each do |pos|
-      # render
-      # sleep(5)
-      # puts
       set_tile_values(pos)
     end
   end
 
-  def set_tile_values(pos)
+  def get_neighbors(pos)
     row, col = pos
     up = col + 1
     down = col - 1
@@ -49,10 +45,15 @@ class Board
     neighbors << bottom_left = [left, down]
     neighbors << bottom_center = [row, down]
     neighbors << bottom_right = [right, down]
+    neighbors
+  end
+
+  def set_tile_values(bomb_position)
+    neighbors = get_neighbors(bomb_position)
     neighbors.each do |neighbor|
       row, col = neighbor
-      if row.between?(0,@row_length) && col.between?(0,@row_length)
-        tile = @grid[row][col]
+      if row.between?(0, @row_length) && col.between?(0, @row_length)
+        tile = self[neighbor]
         unless tile.is_bomb?
           tile.bombs_near_by += 1
         end
@@ -60,10 +61,10 @@ class Board
     end
   end
 
-  # def [](pos)
-  #   row, col = pos
-  #   @grid[row][col]
-  # end
+  def [](pos)
+    row, col = pos
+    @grid[row][col]
+  end
 
   def []=(pos, value)
     row, col = pos
