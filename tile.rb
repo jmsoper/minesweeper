@@ -5,6 +5,15 @@ class Tile
     @bomb = false
     @bombs_near_by = 0
     @showing = false
+    @flagged = false
+  end
+
+  def set_flag
+    @flagged = true
+  end
+
+  def is_flagged?
+    @flagged
   end
 
   def set_to_bomb!
@@ -17,10 +26,14 @@ class Tile
 
   def show
     if @showing
-      if @bomb
+      if @flagged
+        print " |>"
+      elsif @bomb
         print " B "
+      elsif @bombs_near_by == 0
+        print " * "
       else
-        print " _ "
+        print " #{@bombs_near_by} "
       end
     else
       print " ? "

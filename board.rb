@@ -9,17 +9,53 @@ class Board
     @bomb_number = grid_size
     @row_length = grid_size - 1
     grid_size.times{set_bombs(grid_size)}
+    set_bomb_proximity
     render
-
   end
 
   def render
-    puts "   1  2  3  4  5  6  7  8  9 "
+    puts "    1  2  3  4  5  6  7  8  9 "
+    puts "   --------------------------"
     @grid.each_with_index do |row, row_index|
       row.each_with_index do |tile, index|
-        print "#{row_index + 1} " if index == 0
+        print "#{row_index + 1} |" if index == 0
         tile.show
           puts if index == @row_length
+      end
+    end
+  end
+
+  def set_bomb_proximity
+    @bomb_locations.each do |pos|
+      # render
+      # sleep(5)
+      # puts
+      set_tile_values(pos)
+    end
+  end
+
+  def set_tile_values(pos)
+    row, col = pos
+    up = col + 1
+    down = col - 1
+    left = row - 1
+    right = row + 1
+    neighbors = []
+    neighbors << upper_left = [left, up]
+    neighbors << top_center = [row, up]
+    neighbors << top_right = [right, up]
+    neighbors << left_of = [left, col]
+    neighbors << right_of = [right, col]
+    neighbors << bottom_left = [left, down]
+    neighbors << bottom_center = [row, down]
+    neighbors << bottom_right = [right, down]
+    neighbors.each do |neighbor|
+      row, col = neighbor
+      if row.between?(0,@row_length) && col.between?(0,@row_length)
+        tile = @grid[row][col]
+        unless tile.is_bomb?
+          tile.bombs_near_by += 1
+        end
       end
     end
   end
