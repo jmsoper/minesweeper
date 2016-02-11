@@ -30,6 +30,13 @@ class Board
     end
   end
 
+
+  def bomb_sweeper(pos)
+    return []
+
+  end
+
+
   def get_neighbors(pos)
     row, col = pos
     up = col + 1
