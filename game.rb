@@ -2,14 +2,12 @@ require './tile'
 require './board'
 require './player'
 
-
 class Game
 
   def initialize(name)
     @player = Player.new(name)
     @board = Board.new
     @over = false
-
   end
 
   def play_turn
@@ -17,9 +15,10 @@ class Game
     answer, pos = @player.request_move
     if answer == "flag"
       @board[pos].set_flag
+      @board[pos].reveal_tile
     elsif answer == "tile"
       check_for_bomb(pos)
-      @board[pos].reveal_tile
+      @board.bomb_sweeper(pos)
     end
       @board.render
   end
@@ -41,7 +40,34 @@ class Game
     @over = true
   end
 
+  def won?
+    won = true
+    @board.grid.flatten.each do |tile|
+      unless tile.is_bomb?
+        if tile.flagged
+          won = false
+        elsif !tile.showing
+          won = false
+        end
+      end
+    end
+    won
+  end
+
 end
 
 a = Game.new("Julia+Yossi")
 a.play
+
+
+
+
+
+
+
+
+
+
+
+
+#

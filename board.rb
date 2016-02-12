@@ -3,7 +3,7 @@ require './tile'
 class Board
   attr_reader :grid
 
-  def initialize(grid_size = 9)
+  def initialize(grid_size = 3)
     @bomb_locations = Array.new
     @grid = Array.new(grid_size){Array.new(grid_size){Tile.new}}
     @bomb_number = grid_size
@@ -13,8 +13,16 @@ class Board
   end
 
   def render
-    puts "    1  2  3  4  5  6  7  8  9 "
-    puts "   --------------------------"
+    original_string = "   "
+    dashes = "   "
+    @bomb_number.times do |number|
+      original_string += " #{number + 1} "
+      dashes += "---"
+    end
+    puts original_string
+    puts dashes
+    # puts "    1  2  3  4  5  6  7  8  9 "
+    # puts "   --------------------------"
     @grid.each_with_index do |row, row_index|
       row.each_with_index do |tile, index|
         print "#{row_index + 1} |" if index == 0
@@ -32,10 +40,23 @@ class Board
 
 
   def bomb_sweeper(pos)
-    return []
-
+    if self[pos].bombs_near_by != 0
+      self[pos].reveal_tile
+    else
+      self[pos].reveal_tile
+      neighbors = get_neighbors(pos)
+      neighbors.each do |neighbor|
+        unless self[neighbor].showing
+          bomb_sweeper(neighbor)
+        end
+      end
+    end
   end
 
+  def valid_position?(pos)
+    row, col = pos
+    row.between?(0, @row_length) && col.between?(0, @row_length)
+  end
 
   def get_neighbors(pos)
     row, col = pos
@@ -52,7 +73,7 @@ class Board
     neighbors << bottom_left = [left, down]
     neighbors << bottom_center = [row, down]
     neighbors << bottom_right = [right, down]
-    neighbors
+    neighbors = neighbors.select{|neighbor| valid_position?(neighbor)}
   end
 
   def set_tile_values(bomb_position)

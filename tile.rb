@@ -1,5 +1,5 @@
 class Tile
-  attr_accessor :bombs_near_by
+  attr_accessor :bombs_near_by, :showing
 
   def initialize
     @bomb = false
